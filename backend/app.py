@@ -22,18 +22,20 @@ logger = logging.getLogger("app")
 
 @sio.event
 def connect(sid, environ):
-    logger.info("Client connected:" + sid)
+    logger.info("logger: Client connected:" + sid)
     print("Client connected:", sid)
     sio.emit('response', 'Connected to server', room=sid)
 
 
 @sio.event 
 def submit_data(sid, data: Dict):
+    logger.info(f"logger: User {sid} uploaded data: {data}")
     print(f"User {sid} uploaded data: {data}")
     user_data[sid].append(data)
 
 @sio.event
 def join_room(sid, room_id):
+    logger.info(f"logger: User {sid} has joined room {room_id}")
     print(f"User {sid} has joined room {room_id}")
     sio.enter_room(sid, room_id)
 
