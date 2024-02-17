@@ -1,5 +1,9 @@
+import 'dart:async';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:treehacks_app/connection_cubit.dart';
 import 'package:treehacks_app/join_party_screen.dart';
 
 class PartyScreenRoute extends CupertinoPageRoute {
@@ -11,10 +15,34 @@ class PartyScreenRoute extends CupertinoPageRoute {
   final String partyCode;
 }
 
-class PartyScreen extends StatelessWidget {
+class PartyScreen extends StatefulWidget {
   final String partyCode;
 
   const PartyScreen({super.key, required this.partyCode});
+
+  @override
+  State<PartyScreen> createState() => _PartyScreenState();
+}
+
+class _PartyScreenState extends State<PartyScreen> {
+  Timer? timer;
+
+  @override
+  void initState() {
+    super.initState();
+    timer = Timer.periodic(const Duration(seconds: 1), (timer) {
+      print('DEBUG: timer is ticking at ${DateTime.now()}');
+      context.read<ConnectionCubit>().submitData(<String, dynamic>{
+        'heart_rate': 142,
+      });
+    });
+  }
+
+  @override
+  void dispose() {
+    timer?.cancel();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -26,61 +54,72 @@ class PartyScreen extends StatelessWidget {
         child: Container(
           alignment: Alignment.center,
           padding: const EdgeInsets.all(24),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              const SizedBox(height: 32),
-              const Text(
-                'party code:',
-                style: TextStyle(fontSize: 20),
-                textAlign: TextAlign.center,
-              ),
-              Text(
-                partyCode,
-                style: const TextStyle(
-                  fontSize: 24,
-                  fontWeight: FontWeight.bold,
-                ),
-                textAlign: TextAlign.center,
-              ),
-              const SizedBox(height: 32),
-              const Text(
-                'heart rate:',
-                style: TextStyle(fontSize: 20),
-                textAlign: TextAlign.center,
-              ),
-              const Text(
-                '142 bpm',
-                style: TextStyle(
-                  fontSize: 24,
-                  fontWeight: FontWeight.bold,
-                ),
-                textAlign: TextAlign.center,
-              ),
-              const SizedBox(height: 32),
-              const Text(
-                'position in leaderboard',
-                style: TextStyle(fontSize: 24),
-                textAlign: TextAlign.center,
-              ),
-              const Text(
-                '7',
-                style: TextStyle(
-                  fontSize: 30,
-                  fontWeight: FontWeight.bold,
-                ),
-                textAlign: TextAlign.center,
-              ),
-              const Spacer(),
-              CupertinoButton(
-                color: Colors.red,
-                onPressed: () {
-                  Navigator.of(context).pushReplacement(JoinPartyScreenRoute());
-                },
-                child: const Text('Leave Party'),
-              ),
-            ],
+          child: BlocBuilder<ConnectionCubit, ConnState>(
+            builder: (context, state) {
+              return switch (state) {
+                NotConnected _ => const Text('Not connected'),
+                InProgress _ => const Center(
+                    child: CircularProgressIndicator(),
+                  ),
+                Connected _ => Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      const SizedBox(height: 32),
+                      const Text(
+                        'party code:',
+                        style: TextStyle(fontSize: 20),
+                        textAlign: TextAlign.center,
+                      ),
+                      Text(
+                        widget.partyCode,
+                        style: const TextStyle(
+                          fontSize: 24,
+                          fontWeight: FontWeight.bold,
+                        ),
+                        textAlign: TextAlign.center,
+                      ),
+                      const SizedBox(height: 32),
+                      const Text(
+                        'heart rate:',
+                        style: TextStyle(fontSize: 20),
+                        textAlign: TextAlign.center,
+                      ),
+                      const Text(
+                        '142 bpm',
+                        style: TextStyle(
+                          fontSize: 24,
+                          fontWeight: FontWeight.bold,
+                        ),
+                        textAlign: TextAlign.center,
+                      ),
+                      const SizedBox(height: 32),
+                      const Text(
+                        'position in leaderboard',
+                        style: TextStyle(fontSize: 24),
+                        textAlign: TextAlign.center,
+                      ),
+                      const Text(
+                        '7',
+                        style: TextStyle(
+                          fontSize: 30,
+                          fontWeight: FontWeight.bold,
+                        ),
+                        textAlign: TextAlign.center,
+                      ),
+                      const Spacer(),
+                      CupertinoButton(
+                        color: Colors.red,
+                        onPressed: () {
+                          Navigator.of(context)
+                              .pushReplacement(JoinPartyScreenRoute());
+                        },
+                        child: const Text('Leave Party'),
+                      ),
+                    ],
+                  ),
+              };
+            },
           ),
         ),
       ),
