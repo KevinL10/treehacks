@@ -9,15 +9,6 @@ class PartyScreenRoute extends CupertinoPageRoute {
         });
 
   final String partyCode;
-
-  @override
-  Widget buildPage(
-    BuildContext context,
-    Animation<double> animation,
-    Animation<double> secondaryAnimation,
-  ) {
-    return PartyScreen(partyCode: partyCode);
-  }
 }
 
 class PartyScreen extends StatelessWidget {
@@ -32,14 +23,18 @@ class PartyScreen extends StatelessWidget {
         middle: Text('Party Screen'),
       ),
       child: SafeArea(
-        child: Center(
+        child: Container(
+          alignment: Alignment.center,
+          padding: const EdgeInsets.all(24),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               const SizedBox(height: 32),
               const Text(
                 'party code:',
                 style: TextStyle(fontSize: 20),
+                textAlign: TextAlign.center,
               ),
               Text(
                 partyCode,
@@ -47,11 +42,13 @@ class PartyScreen extends StatelessWidget {
                   fontSize: 24,
                   fontWeight: FontWeight.bold,
                 ),
+                textAlign: TextAlign.center,
               ),
               const SizedBox(height: 32),
               const Text(
                 'heart rate:',
                 style: TextStyle(fontSize: 20),
+                textAlign: TextAlign.center,
               ),
               const Text(
                 '142 bpm',
@@ -59,11 +56,13 @@ class PartyScreen extends StatelessWidget {
                   fontSize: 24,
                   fontWeight: FontWeight.bold,
                 ),
+                textAlign: TextAlign.center,
               ),
               const SizedBox(height: 32),
               const Text(
                 'position in leaderboard',
                 style: TextStyle(fontSize: 24),
+                textAlign: TextAlign.center,
               ),
               const Text(
                 '7',
@@ -71,6 +70,7 @@ class PartyScreen extends StatelessWidget {
                   fontSize: 30,
                   fontWeight: FontWeight.bold,
                 ),
+                textAlign: TextAlign.center,
               ),
               const Spacer(),
               CupertinoButton(
