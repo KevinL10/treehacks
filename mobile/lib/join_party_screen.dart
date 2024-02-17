@@ -1,21 +1,22 @@
+import 'dart:io';
+
 import 'package:flutter/cupertino.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:treehacks_app/connection_cubit.dart';
 import 'package:treehacks_app/party_screen.dart';
 import 'package:treehacks_app/pin_input.dart';
 
 class JoinPartyScreenRoute extends CupertinoPageRoute {
   JoinPartyScreenRoute()
       : super(builder: (BuildContext context) {
-          return JoinPartyScreen();
+          return BlocProvider(
+            create: (context) => ConnectionCubit(
+                url: Platform.isAndroid
+                    ? 'ws://10.0.2.2:8000'
+                    : 'ws://localhost:8000'),
+            child: JoinPartyScreen(),
+          );
         });
-
-  @override
-  Widget buildPage(
-    BuildContext context,
-    Animation<double> animation,
-    Animation<double> secondaryAnimation,
-  ) {
-    return JoinPartyScreen();
-  }
 }
 
 class JoinPartyScreen extends StatelessWidget {
@@ -30,14 +31,17 @@ class JoinPartyScreen extends StatelessWidget {
         middle: Text('join party'),
       ),
       child: SafeArea(
-        child: Center(
-          child: Padding(
-            padding: const EdgeInsets.all(20.0),
+        child: GestureDetector(
+          onTap: () => FocusManager.instance.primaryFocus?.unfocus(),
+          child: Container(
+            alignment: Alignment.center,
+            padding: const EdgeInsets.all(24),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
                 const Spacer(),
-                const Text('enter party code'),
+                const Text('enter party code', textAlign: TextAlign.center),
                 const SizedBox(height: 32),
                 FractionallySizedBox(
                   widthFactor: 0.9,
@@ -50,11 +54,11 @@ class JoinPartyScreen extends StatelessWidget {
                 CupertinoButton.filled(
                   onPressed: () async {
                     String partyCode = _partyCodeController.text;
-                    if (_partyCodeController.text.length != 4) {
+                    print('xdxd');
+                    if (partyCode.length != 4) {
                       return;
                     }
 
-                    await Future.delayed(const Duration(seconds: 1));
                     if (!context.mounted) return;
 
                     Navigator.of(context).pushReplacement(
