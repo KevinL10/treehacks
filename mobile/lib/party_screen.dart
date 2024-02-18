@@ -4,22 +4,20 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:treehacks_app/connection_cubit.dart';
-import 'package:treehacks_app/join_party_screen.dart';
 
-class PartyScreenRoute extends CupertinoPageRoute<void> {
-  PartyScreenRoute({required this.partyCode})
-      : super(
-          builder: (context) {
-            return PartyScreen(partyCode: partyCode);
-          },
-        );
+// class PartyScreenRoute extends CupertinoPageRoute<void> {
+//   PartyScreenRoute()
+//       : super(
+//           builder: (context) {
+//             return PartyScreen(partyCode: partyCode);
+//           },
+//         );
 
-  final String partyCode;
-}
+//   final String partyCode;
+// }
 
 class PartyScreen extends StatefulWidget {
-  const PartyScreen({super.key, required this.partyCode});
-  final String partyCode;
+  const PartyScreen({super.key});
 
   @override
   State<PartyScreen> createState() => _PartyScreenState();
@@ -105,9 +103,9 @@ class _PartyScreenState extends State<PartyScreen> {
                         style: TextStyle(fontSize: 20),
                         textAlign: TextAlign.center,
                       ),
-                      Text(
-                        widget.partyCode,
-                        style: const TextStyle(
+                      const Text(
+                        'widget.partyCode',
+                        style: TextStyle(
                           fontSize: 24,
                           fontWeight: FontWeight.bold,
                         ),
@@ -154,8 +152,7 @@ class _PartyScreenState extends State<PartyScreen> {
                       CupertinoButton(
                         color: Colors.red,
                         onPressed: () {
-                          Navigator.of(context)
-                              .pushReplacement(JoinPartyScreenRoute());
+                          context.read<ConnectionCubit>().leaveParty();
                         },
                         child: const Text('Leave Party'),
                       ),

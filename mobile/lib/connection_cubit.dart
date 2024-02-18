@@ -36,13 +36,19 @@ class ConnectionCubit extends Cubit<ConnState> {
       ),
     );
 
-    emit(Connected());
+    emit(Connected(partyCode: code, name: name));
   }
 
   Future<void> submitData(Map<String, dynamic> data) async {
     assert(_channel != null, 'web socket channel must not be null');
 
     _channel!.sink.add(_jsonRpc('submit_data', data));
+  }
+
+  void leaveParty() {
+    _channel?.sink.close();
+    _channel = null;
+    emit(NotConnected());
   }
 }
 
@@ -65,4 +71,9 @@ class NotConnected extends ConnState {}
 
 class InProgress extends ConnState {}
 
-class Connected extends ConnState {}
+class Connected extends ConnState {
+  Connected({required this.partyCode, required this.name});
+
+  final String partyCode;
+  final String name;
+}

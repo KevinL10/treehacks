@@ -5,14 +5,14 @@ import 'package:terra_flutter_bridge/terra_flutter_bridge.dart';
 import 'package:treehacks_app/connection_cubit.dart';
 import 'package:treehacks_app/pin_input.dart';
 
-class JoinPartyScreenRoute extends CupertinoPageRoute<void> {
-  JoinPartyScreenRoute()
-      : super(
-          builder: (context) {
-            return const JoinPartyScreen();
-          },
-        );
-}
+// class JoinPartyScreenRoute extends CupertinoPageRoute<void> {
+//   JoinPartyScreenRoute()
+//       : super(
+//           builder: (context) {
+//             return const JoinPartyScreen();
+//           },
+//         );
+// }
 
 class JoinPartyScreen extends StatefulWidget {
   const JoinPartyScreen({super.key});
