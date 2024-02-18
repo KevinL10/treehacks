@@ -28,6 +28,7 @@ room_users = defaultdict(list)
 # room_id: event
 room_started_event: Dict[int, List[asyncio.Event]] = defaultdict(list) 
 
+room_song_playing: Dict[int, asyncio.Event] = {} 
 
 # maps from room_id: {name: [(heart_rate, step, time)]}
 user_health_data = defaultdict(lambda: defaultdict(list))
@@ -67,6 +68,14 @@ async def start_room(request: Request):
     room_id = data["room_id"]
     for event in room_started_event[room_id]:
         event.set()
+    
+    room_song_playing[room_id] = asyncio.Event()
+    return JSONResponse({"status": "ok", "room_id": room_id})
+
+
+@app.get("/finish-song")
+async def finish_song(room_id: int = -1):
+    room_song_playing[room_id].set()
     return JSONResponse({"status": "ok", "room_id": room_id})
 
 
@@ -76,6 +85,7 @@ async def get_top_overall(room_id: int = -1):
     items = [(user, compute_overall_score(measurements)) for user, measurements in user_health_data[room_id].items()]
     ranked_results = [{"name": item[0], "score": item[1]} for item in sorted(items, key=lambda k: -k[1])]
     return JSONResponse({"data": ranked_results})
+
 
 @app.get("/top/calories")
 async def get_top_calories(room_id: int = -1):
@@ -118,8 +128,8 @@ async def websocket_endpoint(websocket: WebSocket):
         
         # receive data from watch repeatedly
         # TODO: stop when the song finishes
-        for _ in range(100):
-        # while True:
+        while not room_song_playing[room_id].is_set():
+        # while True not room_song_playing[room_id].is_set()::
             data = await websocket.receive_json()
             assert data["method"] == "submit_data"
 
@@ -133,6 +143,7 @@ async def websocket_endpoint(websocket: WebSocket):
             await websocket.send_json({"method": "update_placement", "params": {"index": top_users.index(name)+1}})
 
 
+        print("FOUND WINNER")
         winner_name = get_top_room_users(room_id)[0]
         await websocket.send_json({"method": "update_status", "params": {"status": "finished", "won": name == winner_name}})
 

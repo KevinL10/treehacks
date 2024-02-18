@@ -4,6 +4,7 @@ import { Buffer } from 'buffer';
 import { AiOutlinePauseCircle } from 'react-icons/ai';
 import { BiErrorCircle } from 'react-icons/bi'
 import { HiOutlineStatusOffline } from 'react-icons/hi'
+import { PageState } from '@/lib/utils';
 // import './styles.css'
 
 //Setting up the Spotify API and Endpoints
@@ -86,7 +87,7 @@ export const getNowPlaying = async () => {
 };
 
 //Main function to process the data and render the widget
-const NowPlaying = () => {
+const NowPlaying = ({ setState, roomId }: { setState: React.Dispatch<React.SetStateAction<PageState>>, roomId: number }) => {
 
     //Hold information about the currently playing song
     const [nowPlaying, setNowPlaying] = useState<any>(null);
@@ -110,8 +111,16 @@ const NowPlaying = () => {
     let albumImageUrl = './images/albumCover.png'
     let title = ''
     let artist = ''
-
     if (nowPlaying != null && nowPlaying.title) {
+
+        if ( nowPlaying.timeTotal - nowPlaying.timePlayed <= 5000) {
+            const result = fetch(`${process.env.NEXT_PUBLIC_API_URL}/finish-song?room_id=${roomId}`).then(data => data.json()).then(data => data)
+            console.log("finished song", result)
+            
+            setTimeout(() => setState(PageState.STANDINGS), 5000)
+            // setState(PageState.STANDINGS)
+        }
+
 
         //Used while displaing a sounbar/pause icon on the widget
         nowPlaying.isPlaying ? playerState = 'PLAY' : playerState = 'PAUSE'
@@ -126,6 +135,7 @@ const NowPlaying = () => {
         minutesTotal = Math.floor(secondsTotal / 60);
         secondsTotal = secondsTotal % 60;
 
+        
         albumImageUrl = nowPlaying.albumImageUrl
         title = nowPlaying.title
         artist = nowPlaying.artist
@@ -163,9 +173,6 @@ const NowPlaying = () => {
                     {/* Song Timer displayed based on playerState */}
                     <div className='nowPlayingTime'>{pad(minutesPlayed)}:{pad(secondsPlayed)} / {pad(minutesTotal)}:{pad(secondsTotal)}</div>
                 </div>
-                {/* Icon displayed based on playerState */}
-                {/* <div className='nowPlayingState'>
-                    {playerState === 'PLAY' ? <img alt='soundbar' src='./images/soundbar.gif' title='Now Listening' /> : playerState === 'PAUSE' ? <AiOutlinePauseCircle size={40} /> : playerState === 'OFFLINE' ? <HiOutlineStatusOffline size={40} /> : <BiErrorCircle size={40} />}</div> */}
             </div>
         </a>
     );

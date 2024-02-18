@@ -19,20 +19,25 @@ const data = [
 ]
 
 export function StandingsChart({ winners }: { winners: RankingItem[] }) {
-    const data = [
-        {
-            name: winners[1].name,
-            total: winners[1].score
-        },
-        {
-            name: winners[0].name,
-            total: winners[0].score
-        },
-        {
-            name: winners[2].name,
-            total: winners[2].score
-        },
-    ]
+    // const data = [
+    //     {
+    //         name: winners[1].name,
+    //         total: winners[1].score
+    //     },
+    //     {
+    //         name: winners[0].name,
+    //         total: winners[0].score
+    //     },
+    //     {
+    //         name: winners[2].name,
+    //         total: winners[2].score
+    //     },
+    // ]
+    let data = []
+    for(let i = 0; i < winners.length; i++){
+        data.push({name: winners[i].name, total: winners[i].score})
+    } 
+
     return (
         <ResponsiveContainer width="100%" height={350}>
             <BarChart data={data}>

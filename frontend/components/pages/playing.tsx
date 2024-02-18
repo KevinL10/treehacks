@@ -8,7 +8,7 @@ const players = [
   { name: "Kevin", score: 425 },
   { name: "Bartek", score: 234 }
 ]
-export default function PlayingPage({ setState, roomId }: { setState: React.Dispatch<React.SetStateAction<PageState>>,roomId: number }) {
+export default function PlayingPage({ setState, roomId }: { setState: React.Dispatch<React.SetStateAction<PageState>>, roomId: number }) {
   const [users, setUsers] = useState<string[]>(["kevin", "bartek"])
   const [leaderboardOverall, setLeaderboardOverall] = useState<RankingItem[]>([])
   const [leaderboardCalories, setLeaderboardCalories] = useState<RankingItem[]>([])
@@ -48,7 +48,7 @@ export default function PlayingPage({ setState, roomId }: { setState: React.Disp
             <iframe style={{borderRadius: 12}} src="https://open.spotify.com/embed/track/5yVIlYEHZxQVLyInCdldoS?utm_source=generator" width="100%" height="352" frameBorder="0" allowFullScreen={false} allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
         </div> */}
         <div className='mt-8'>
-          <NowPlaying />
+          <NowPlaying roomId={roomId} setState={setState}/>
         </div>
         <div className='mt-8 flex justify-between'>
           <RankingTable title="Top Overall" players={leaderboardOverall} />
