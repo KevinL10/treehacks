@@ -5,17 +5,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:treehacks_app/connection_cubit.dart';
 
-// class PartyScreenRoute extends CupertinoPageRoute<void> {
-//   PartyScreenRoute()
-//       : super(
-//           builder: (context) {
-//             return PartyScreen(partyCode: partyCode);
-//           },
-//         );
-
-//   final String partyCode;
-// }
-
 class PartyScreen extends StatefulWidget {
   const PartyScreen({super.key});
 

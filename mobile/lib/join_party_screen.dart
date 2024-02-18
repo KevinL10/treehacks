@@ -6,15 +6,6 @@ import 'package:terra_flutter_rt/types.dart';
 import 'package:treehacks_app/connection_cubit.dart';
 import 'package:treehacks_app/pin_input.dart';
 
-// class JoinPartyScreenRoute extends CupertinoPageRoute<void> {
-//   JoinPartyScreenRoute()
-//       : super(
-//           builder: (context) {
-//             return const JoinPartyScreen();
-//           },
-//         );
-// }
-
 class JoinPartyScreen extends StatefulWidget {
   const JoinPartyScreen({super.key});
 
@@ -34,16 +25,16 @@ class _JoinPartyScreenState extends State<JoinPartyScreen> {
   }
 
   Future<void> _initTerra() async {
-    await TerraFlutterRt.initConnection('0wRWEyiCZH1G5EktshJdVKWzmx6PXvg_');
-
     await TerraFlutterRt.init(
       'treehacks2024v2-staging-nd5LuAH0b0',
       'test-username',
     );
 
+    await TerraFlutterRt.initConnection('0wRWEyiCZH1G5EktshJdVKWzmx6PXvg_');
+
     const connection = Connection.ble;
     const datatypes = [types.DataType.heartRate];
-    // await TerraFlutterRt.startDeviceScan(connection);
+    await TerraFlutterRt.startDeviceScan(connection);
   }
 
   @override
