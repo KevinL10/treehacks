@@ -16,6 +16,7 @@ dependencies:
   health: ^9.0.1
   flutter_bloc: ^8.1.4
   socket_io_client: ^2.0.3+1
+  terra_flutter_bridge: ^0.6.3
 
 dev_dependencies:
   flutter_test:

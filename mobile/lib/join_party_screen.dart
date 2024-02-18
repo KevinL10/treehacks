@@ -1,5 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:terra_flutter_bridge/models/enums.dart';
+import 'package:terra_flutter_bridge/terra_flutter_bridge.dart';
 import 'package:treehacks_app/connection_cubit.dart';
 import 'package:treehacks_app/party_screen.dart';
 import 'package:treehacks_app/pin_input.dart';
@@ -7,14 +9,33 @@ import 'package:treehacks_app/pin_input.dart';
 class JoinPartyScreenRoute extends CupertinoPageRoute {
   JoinPartyScreenRoute()
       : super(builder: (BuildContext context) {
-          return JoinPartyScreen();
+          return const JoinPartyScreen();
         });
 }
 
-class JoinPartyScreen extends StatelessWidget {
+class JoinPartyScreen extends StatefulWidget {
+  const JoinPartyScreen({super.key});
+
+  @override
+  State<JoinPartyScreen> createState() => _JoinPartyScreenState();
+}
+
+class _JoinPartyScreenState extends State<JoinPartyScreen> {
   final TextEditingController _partyCodeController = TextEditingController();
 
-  JoinPartyScreen({super.key});
+  @override
+  void initState() {
+    super.initState();
+
+    TerraFlutter.initTerra('devID', 'referenceID').then((_) {
+      TerraFlutter.initConnection(
+        Connection.appleHealth,
+        'token',
+        true,
+        [CustomPermission.heartRate, CustomPermission.steps],
+      );
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
