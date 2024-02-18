@@ -114,10 +114,14 @@ const NowPlaying = ({ setState, roomId }: { setState: React.Dispatch<React.SetSt
     if (nowPlaying != null && nowPlaying.title) {
 
         if ( nowPlaying.timeTotal - nowPlaying.timePlayed <= 5000) {
-            const result = fetch(`${process.env.NEXT_PUBLIC_API_URL}/finish-song?room_id=${roomId}`).then(data => data.json()).then(data => data)
-            console.log("finished song", result)
             
-            setTimeout(() => setState(PageState.STANDINGS), 5000)
+            setTimeout(() => {
+                const result = fetch(`${process.env.NEXT_PUBLIC_API_URL}/finish-song?room_id=${roomId}`).then(data => data.json()).then(data => data)
+                console.log("finished song", result)
+                setState(PageState.STANDINGS)
+                
+                
+            }, 5000)
             // setState(PageState.STANDINGS)
         }
 
