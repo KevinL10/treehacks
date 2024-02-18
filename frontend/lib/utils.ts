@@ -9,7 +9,7 @@ export enum PageState {
   START = "START",
   WAITING = "WAITING",
   PLAYING = "PLAYING",
-  LEADERBOARD = "LEADERBOARD"
+  STANDINGS = "STANDINGS"
 }
 
 

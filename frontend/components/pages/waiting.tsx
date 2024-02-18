@@ -14,7 +14,7 @@ export default function WaitingPage({ setState, roomId }: {
   
 
   const fetchWaitingUsers = async () => {
-    const response = await fetch(`http://localhost:8000/users?room_id=${roomId}`)
+    const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/users?room_id=${roomId}`)
     const data = await response.json()
     setUsers(data.data)
   }
@@ -33,7 +33,7 @@ export default function WaitingPage({ setState, roomId }: {
 
 
   async function handleStartRoom(){
-    const response = await fetch(`http://localhost:8000/start`, {
+    const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/start`, {
       method: "POST",
       headers: {
         'Content-Type': 'application/json'

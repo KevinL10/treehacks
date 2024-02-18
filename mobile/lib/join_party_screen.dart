@@ -1,18 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:terra_flutter_bridge/models/enums.dart';
-import 'package:terra_flutter_bridge/terra_flutter_bridge.dart';
 import 'package:treehacks_app/connection_cubit.dart';
 import 'package:treehacks_app/pin_input.dart';
-
-// class JoinPartyScreenRoute extends CupertinoPageRoute<void> {
-//   JoinPartyScreenRoute()
-//       : super(
-//           builder: (context) {
-//             return const JoinPartyScreen();
-//           },
-//         );
-// }
 
 class JoinPartyScreen extends StatefulWidget {
   const JoinPartyScreen({super.key});
@@ -29,14 +18,24 @@ class _JoinPartyScreenState extends State<JoinPartyScreen> {
   void initState() {
     super.initState();
 
-    TerraFlutter.initTerra('devID', 'referenceID').then((_) {
-      TerraFlutter.initConnection(
-        Connection.appleHealth,
-        'token',
-        true,
-        [CustomPermission.heartRate, CustomPermission.steps],
-      );
-    });
+    _initTerra();
+  }
+
+  Future<void> _initTerra() async {
+    // Synchronous SDK
+    /* await TerraFlutter.initTerra(
+      'treehacks2024v2-staging-nd5LuAH0b0',
+      'test-username',
+    );
+
+    await TerraFlutter.initConnection(
+      Connection.appleHealth,
+      '0wRWEyiCZH1G5EktshJdVKWzmx6PXvg_',
+      true,
+      [CustomPermission.heartRate],
+    ); */
+
+    // await TerraFlutter.getActivity();
   }
 
   @override

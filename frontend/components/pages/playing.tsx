@@ -15,7 +15,7 @@ export default function PlayingPage({ setState, roomId }: { setState: React.Disp
 
   const fetchLeaderboard = async (category: string, setLeaderboard: React.Dispatch<React.SetStateAction<RankingItem[]>>) => {
     //category one of "overall" or "fitness"
-    const response = await fetch(`http://localhost:8000/top/${category}?room_id=${roomId}`)
+    const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/top/${category}?room_id=${roomId}`)
     const data = await response.json()
     console.log(category, data)
     setLeaderboard(data.data)
@@ -43,8 +43,11 @@ export default function PlayingPage({ setState, roomId }: { setState: React.Disp
           <h1 className='text-3xl font-semibold tracking-tighter'>Leaderboard</h1>
         </div>
 
+        <div className='mt-8'>
+            <iframe style={{borderRadius: 12}} src="https://open.spotify.com/embed/track/5yVIlYEHZxQVLyInCdldoS?utm_source=generator" width="100%" height="352" frameBorder="0" allowFullScreen={false} allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
+        </div>
         <div className='mt-8 flex justify-between'>
-          <RankingTable title="Top Dancers" players={leaderboardOverall} />
+          <RankingTable title="Top Overall" players={leaderboardOverall} />
           <RankingTable title="Top Calories Burned" players={leaderboardCalories} />
           <RankingTable title="Top Steps Taken" players={leaderboardOverall} />
         </div>

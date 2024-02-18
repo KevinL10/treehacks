@@ -10,7 +10,7 @@ import time
 app = FastAPI()
 
 origins = [
-    "http://localhost:3000",
+    "*",
 ]
 
 app.add_middleware(
@@ -101,29 +101,42 @@ async def websocket_endpoint(websocket: WebSocket):
     name = data["params"]["name"]
     room_users[room_id].append(name)
 
-    await websocket.send_json({"method": "update_status", "params": {"status": "waiting"}})
-
-    # wait for game to be started
-    game_started = asyncio.Event()
-    room_started_event[room_id] = game_started 
-    await game_started.wait()
-    
-    await websocket.send_json({"method": "update_status", "params": {"status": "starting"}})
-    
-    # receive data from watch repeatedly
-    # TODO: stop when the song finishes
     while True:
-        data = await websocket.receive_json()
-        assert data["method"] == "submit_data"
+        await websocket.send_json({"method": "update_status", "params": {"status": "waiting"}})
 
-        heartrate = data["params"]["heartrate"]
-        step_count = data["params"]["step_count"]
-        timestamp = int(time.time())
+        # wait for game to be started
+        game_started = asyncio.Event()
+        room_started_event[room_id] = game_started 
+        await game_started.wait()
+        
+        await websocket.send_json({"method": "update_status", "params": {"status": "starting"}})
+        
+        # receive data from watch repeatedly
+        # TODO: stop when the song finishes
+        for _ in range(100):
+        # while True:
+            data = await websocket.receive_json()
+            assert data["method"] == "submit_data"
 
-        print(data)
-        user_health_data[room_id][name].append((heartrate, step_count, timestamp))
+            heartrate = data["params"]["heartrate"]
+            step_count = data["params"]["step_count"]
+            timestamp = int(time.time())
+
+            print(data)
+            user_health_data[room_id][name].append((heartrate, step_count, timestamp))
 
 
+        items = [(user, compute_overall_score(measurements)) for user, measurements in user_health_data[room_id].items()]
+        winner_name = sorted(items, key=lambda s:-s[1])[0][0]
+
+        await websocket.send_json({"method": "update_status", "params": {"status": "finished", "won": name == winner_name}})
+
+        if winner_name == name:
+            data = await websocket.receive_json()
+            assert data["method"] == "set_song"
+
+            song_name = data["params"]["song"]
+            print("SETTING NEW SONG", song_name)
 
 '''
 
