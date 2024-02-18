@@ -43,9 +43,7 @@ class _PartyScreenState extends State<PartyScreen> {
             autocorrect: false,
             textAlign: TextAlign.center,
             placeholder: 'Request the next song',
-            onChanged: (value) {
-              print('DEBUG: value is $value');
-            },
+            onChanged: (value) {},
           ),
         ),
         CupertinoActionSheetAction(
@@ -121,19 +119,21 @@ class _PartyScreenState extends State<PartyScreen> {
                           textAlign: TextAlign.center,
                         ),
                         const SizedBox(height: 32),
-                        const Text(
-                          'position in leaderboard',
-                          style: TextStyle(fontSize: 24),
-                          textAlign: TextAlign.center,
-                        ),
-                        const Text(
-                          '7',
-                          style: TextStyle(
-                            fontSize: 30,
-                            fontWeight: FontWeight.bold,
+                        if (state.placement != null) ...[
+                          const Text(
+                            'position in leaderboard',
+                            style: TextStyle(fontSize: 24),
+                            textAlign: TextAlign.center,
                           ),
-                          textAlign: TextAlign.center,
-                        ),
+                          Text(
+                            state.placement.toString(),
+                            style: const TextStyle(
+                              fontSize: 30,
+                              fontWeight: FontWeight.bold,
+                            ),
+                            textAlign: TextAlign.center,
+                          ),
+                        ],
                         const Spacer(),
                         CupertinoButton(
                           onPressed: () {

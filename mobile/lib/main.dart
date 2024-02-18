@@ -6,13 +6,15 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:treehacks_app/app_router.dart';
 import 'package:treehacks_app/connection_cubit.dart';
 
+const debugUrl = 'ws://localhost:8000/ws';
+const androidDebugUrl = 'ws://10.0.2.2:8000/ws';
+const prodUrl = 'wss://terrahacks.fly.dev/ws';
+
 void main() {
   runApp(
     BlocProvider<ConnectionCubit>(
       create: (context) => ConnectionCubit(
-        url: Platform.isAndroid
-            ? 'ws://10.0.2.2:8000/ws'
-            : 'ws://localhost:8000/ws',
+        url: Platform.isAndroid ? androidDebugUrl : debugUrl,
       ),
       child: const MyApp(),
     ),

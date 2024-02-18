@@ -30,10 +30,43 @@ class ConnectionCubit extends Cubit<ConnState> {
         final status = data['params']['status'] as String;
 
         if (status == 'waiting') {
-          emit(Connected(waiting: true, roomId: roomId, name: name));
+          emit(
+            Connected(
+              waiting: true,
+              roomId: roomId,
+              name: name,
+              placement: null,
+            ),
+          );
         } else if (status == 'starting') {
-          emit(Connected(waiting: false, roomId: roomId, name: name));
+          emit(
+            Connected(
+              waiting: false,
+              roomId: roomId,
+              name: name,
+              placement: null,
+            ),
+          );
+        } else if (status == 'update_placement') {
+          emit(
+            Connected(
+              waiting: false,
+              roomId: roomId,
+              name: name,
+              placement: null,
+            ),
+          );
         }
+      } else if (data['method'] == 'update_placement') {
+        final placement = data['params']['index'] as int;
+        emit(
+          Connected(
+            waiting: false,
+            roomId: roomId,
+            name: name,
+            placement: placement,
+          ),
+        );
       }
     });
 
@@ -50,6 +83,11 @@ class ConnectionCubit extends Cubit<ConnState> {
 
   Future<void> submitData(Map<String, dynamic> data) async {
     assert(_channel != null, 'web socket channel must not be null');
+
+    final state = this.state;
+    // if (state is Connected && state.) {
+
+    // }
 
     _channel!.sink.add(_jsonRpc('submit_data', data));
   }
@@ -85,9 +123,11 @@ class Connected extends ConnState {
     required this.waiting,
     required this.roomId,
     required this.name,
+    required this.placement,
   });
 
   final bool waiting;
   final int roomId;
   final String name;
+  final int? placement;
 }
