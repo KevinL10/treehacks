@@ -105,13 +105,13 @@ class _PartyScreenState extends State<PartyScreen> {
                       children: [
                         const SizedBox(height: 32),
                         const Text(
-                          'party code:',
+                          'party code',
                           style: TextStyle(fontSize: 20),
                           textAlign: TextAlign.center,
                         ),
-                        const Text(
-                          'widget.partyCode',
-                          style: TextStyle(
+                        Text(
+                          c.roomId.toString(),
+                          style: const TextStyle(
                             fontSize: 24,
                             fontWeight: FontWeight.bold,
                           ),
@@ -119,7 +119,7 @@ class _PartyScreenState extends State<PartyScreen> {
                         ),
                         const SizedBox(height: 32),
                         const Text(
-                          'heart rate:',
+                          'heart rate',
                           style: TextStyle(fontSize: 20),
                           textAlign: TextAlign.center,
                         ),

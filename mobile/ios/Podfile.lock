@@ -1,37 +1,27 @@
 PODS:
   - Flutter (1.0.0)
-  - terra_flutter_bridge (0.4.3):
-    - Flutter
-    - TerraiOS (~> 1.6.2)
   - terra_flutter_rt (0.0.1):
     - Flutter
     - TerraRTiOS (~> 0.0.6)
-  - TerraiOS (1.6.2)
   - TerraRTiOS (0.0.6)
 
 DEPENDENCIES:
   - Flutter (from `Flutter`)
-  - terra_flutter_bridge (from `.symlinks/plugins/terra_flutter_bridge/ios`)
   - terra_flutter_rt (from `.symlinks/plugins/terra_flutter_rt/ios`)
 
 SPEC REPOS:
   trunk:
-    - TerraiOS
     - TerraRTiOS
 
 EXTERNAL SOURCES:
   Flutter:
     :path: Flutter
-  terra_flutter_bridge:
-    :path: ".symlinks/plugins/terra_flutter_bridge/ios"
   terra_flutter_rt:
     :path: ".symlinks/plugins/terra_flutter_rt/ios"
 
 SPEC CHECKSUMS:
   Flutter: e0871f40cf51350855a761d2e70bf5af5b9b5de7
-  terra_flutter_bridge: 80ab96f061b35b02f3e6b5401d5772ab6f8fcff4
   terra_flutter_rt: 259fbc75f24a0db7753897090ffe1b9b4ba3d376
-  TerraiOS: 21083846f3e232d0589eedb9c48caaa8bf1419b6
   TerraRTiOS: d7c26f5316ce957caa7b2abb8f361c0068963012
 
 PODFILE CHECKSUM: 5a367937f10bf0c459576e5e472a1159ee029c13

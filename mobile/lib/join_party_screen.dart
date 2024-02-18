@@ -1,7 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:terra_flutter_bridge/models/enums.dart';
-import 'package:terra_flutter_bridge/terra_flutter_bridge.dart';
+import 'package:terra_flutter_rt/terra_flutter_rt.dart';
+import 'package:terra_flutter_rt/types.dart' as types;
+import 'package:terra_flutter_rt/types.dart';
 import 'package:treehacks_app/connection_cubit.dart';
 import 'package:treehacks_app/pin_input.dart';
 
@@ -29,14 +30,20 @@ class _JoinPartyScreenState extends State<JoinPartyScreen> {
   void initState() {
     super.initState();
 
-    TerraFlutter.initTerra('devID', 'referenceID').then((_) {
-      TerraFlutter.initConnection(
-        Connection.appleHealth,
-        'token',
-        true,
-        [CustomPermission.heartRate, CustomPermission.steps],
-      );
-    });
+    _initTerra();
+  }
+
+  Future<void> _initTerra() async {
+    await TerraFlutterRt.initConnection('0wRWEyiCZH1G5EktshJdVKWzmx6PXvg_');
+
+    await TerraFlutterRt.init(
+      'treehacks2024v2-staging-nd5LuAH0b0',
+      'test-username',
+    );
+
+    const connection = Connection.ble;
+    const datatypes = [types.DataType.heartRate];
+    // await TerraFlutterRt.startDeviceScan(connection);
   }
 
   @override
