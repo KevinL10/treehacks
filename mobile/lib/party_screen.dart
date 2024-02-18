@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:math';
 
 import 'package:bloc_presentation/bloc_presentation.dart';
 import 'package:flutter/cupertino.dart';
@@ -21,8 +22,10 @@ class _PartyScreenState extends State<PartyScreen> {
   void initState() {
     super.initState();
     timer = Timer.periodic(const Duration(seconds: 1), (timer) {
+      final randomHeartrate = Random().nextInt(100) + 70;
+      print('randomHeartrate: $randomHeartrate');
       context.read<ConnectionCubit>().submitData(<String, dynamic>{
-        'heartrate': 69,
+        'heartrate': randomHeartrate,
         'step_count': 2137,
       });
     });
@@ -147,15 +150,6 @@ class _PartyScreenState extends State<PartyScreen> {
                               ),
                             ],
                             const Spacer(),
-                            CupertinoButton(
-                              onPressed: () {
-                                showCupertinoModalPopup<void>(
-                                  context: context,
-                                  builder: _modalBuilder,
-                                );
-                              },
-                              child: const Text('simulate "you win"'),
-                            ),
                             CupertinoButton(
                               color: Colors.red,
                               onPressed: () {

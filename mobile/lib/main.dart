@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -14,7 +12,8 @@ void main() {
   runApp(
     BlocProvider<ConnectionCubit>(
       create: (context) => ConnectionCubit(
-        url: Platform.isAndroid ? androidDebugUrl : debugUrl,
+        // url: Platform.isAndroid ? androidDebugUrl : debugUrl,
+        url: prodUrl,
       ),
       child: const MyApp(),
     ),
