@@ -1,5 +1,6 @@
 from fastapi import FastAPI, WebSocket, Request
 from fastapi.responses import HTMLResponse, JSONResponse, PlainTextResponse
+from fastapi.middleware.cors import CORSMiddleware
 from collections import defaultdict
 from uuid import uuid4
 from typing import List, Dict   
@@ -7,6 +8,18 @@ import asyncio
 import time
 
 app = FastAPI()
+
+origins = [
+    "http://localhost:3000",
+]
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 # room_id: list of names in the room
 # note: names server as unique identifiers; two players must not have the same name
@@ -16,9 +29,17 @@ room_users = defaultdict(list)
 room_started_event: Dict[int, asyncio.Event] = {}
 
 
-
-# maps from room_id: {name: [(health, step, time)]}
+# maps from room_id: {name: [(heart_rate, step, time)]}
 user_health_data = defaultdict(lambda: defaultdict(list))
+
+def compute_score(measurements):
+    avg_heart_rate = sum([m[0] for m in measurements]) / len(measurements)
+    return avg_heart_rate * 5
+
+
+@app.get("/users")
+async def get_room_data(room_id: int = -1):
+    return JSONResponse({"data": room_users[room_id]})
 
 
 @app.get("/")
@@ -31,13 +52,21 @@ async def start_room(request: Request):
     data = await request.json()
     room_id = data["room_id"]
     room_started_event[room_id].set()
-    return JSONResponse({"status": "ok"})
+    return JSONResponse({"status": "ok", "room_id": room_id})
+
+
+@app.get("/top/overall")
+async def get_top_overall(room_id: int = -1):
+    # (name, score)
+    items = [(user, compute_score(measurements)) for user, measurements in user_health_data[room_id].items()]
+    ranked_results = [{"name": item[0], "score": item[1]} for item in sorted(items, key=lambda k: -k[1])]
+    return JSONResponse({"data": ranked_results})
+
 
 
 @app.get("/data")
 async def get_room_data(room_id: int = -1):
-    print(user_health_data[room_id])
-    return JSONResponse(user_health_data[room_id])
+    return JSONResponse({"data": user_health_data[room_id]})
 
 
 @app.websocket("/ws")
