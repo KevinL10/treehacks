@@ -437,14 +437,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.2.1"
-  terra_flutter_rt:
-    dependency: "direct main"
-    description:
-      name: terra_flutter_rt
-      sha256: f63ffac5ce8ddfd7f4ebac0e913ba70ad91bbf5b54bf407ccac37992ee259e83
-      url: "https://pub.dev"
-    source: hosted
-    version: "0.1.1"
   test_api:
     dependency: transitive
     description:
