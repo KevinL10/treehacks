@@ -9,7 +9,7 @@ async def main():
     room = int(input("room_id: "))
 
     uri = "wss://terrahacks.fly.dev/ws"
-    # uri = "ws://localhost:8000/ws"
+    uri = "ws://localhost:8000/ws"
     async with websockets.connect(uri) as websocket:
         await websocket.send(json.dumps({"method": "join_room", "params": {"room_id": room, "name": name}}))
         

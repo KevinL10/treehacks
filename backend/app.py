@@ -26,7 +26,7 @@ app.add_middleware(
 room_users = defaultdict(list)
 
 # room_id: event
-room_started_event: Dict[int, asyncio.Event] = {}
+room_started_event: Dict[int, List[asyncio.Event]] = defaultdict(list) 
 
 
 # maps from room_id: {name: [(heart_rate, step, time)]}
@@ -65,7 +65,8 @@ async def index():
 async def start_room(request: Request):
     data = await request.json()
     room_id = data["room_id"]
-    room_started_event[room_id].set()
+    for event in room_started_event[room_id]:
+        event.set()
     return JSONResponse({"status": "ok", "room_id": room_id})
 
 
@@ -106,7 +107,7 @@ async def websocket_endpoint(websocket: WebSocket):
 
         # wait for game to be started
         game_started = asyncio.Event()
-        room_started_event[room_id] = game_started 
+        room_started_event[room_id].append(game_started)
         await game_started.wait()
         
         await websocket.send_json({"method": "update_status", "params": {"status": "starting"}})
