@@ -90,6 +90,10 @@ async def get_room_data(room_id: int = -1):
     return JSONResponse({"data": user_health_data[room_id]})
 
 
+def get_top_room_users(room_id: int):
+    items = [(user, compute_overall_score(measurements)) for user, measurements in user_health_data[room_id].items()]
+    return [key[0] for key in sorted(items, key=lambda s:-s[1])]
+
 @app.websocket("/ws")
 async def websocket_endpoint(websocket: WebSocket):
     await websocket.accept()
@@ -123,13 +127,12 @@ async def websocket_endpoint(websocket: WebSocket):
             step_count = data["params"]["step_count"]
             timestamp = int(time.time())
 
-            print(data)
+            top_users = get_top_room_users(room_id)
+            await websocket.send_json({"method": "update_placement", "params": {"index": top_users.index(name)}})
+
             user_health_data[room_id][name].append((heartrate, step_count, timestamp))
 
-
-        items = [(user, compute_overall_score(measurements)) for user, measurements in user_health_data[room_id].items()]
-        winner_name = sorted(items, key=lambda s:-s[1])[0][0]
-
+        winner_name = get_top_room_users(room_id)[0]
         await websocket.send_json({"method": "update_status", "params": {"status": "finished", "won": name == winner_name}})
 
         if winner_name == name:
