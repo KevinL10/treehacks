@@ -21,11 +21,11 @@ class MyApp extends StatelessWidget {
             ? 'http://10.0.2.2:8000'
             : 'http://localhost:8000',
       ),
-      child: CupertinoApp(
+      child: const CupertinoApp(
         title: 'Secret TreeHacks X project',
-        theme: const CupertinoThemeData(),
+        theme: CupertinoThemeData(),
         home: JoinPartyScreen(),
-        localizationsDelegates: const [
+        localizationsDelegates: [
           DefaultMaterialLocalizations.delegate,
           DefaultCupertinoLocalizations.delegate,
           DefaultWidgetsLocalizations.delegate,

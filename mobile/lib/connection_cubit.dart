@@ -10,9 +10,11 @@ class ConnectionCubit extends Cubit<ConnState> {
   io.Socket? socket;
 
   Future<void> connect(String code) async {
-    if (state is Connected) return;
+    if (state is Connected) {
+      return;
+    }
 
-    final Completer<void> completer = Completer();
+    final completer = Completer<void>();
 
     emit(InProgress());
     socket = io.io(url);

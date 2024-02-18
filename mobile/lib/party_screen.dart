@@ -6,19 +6,20 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:treehacks_app/connection_cubit.dart';
 import 'package:treehacks_app/join_party_screen.dart';
 
-class PartyScreenRoute extends CupertinoPageRoute {
+class PartyScreenRoute extends CupertinoPageRoute<void> {
   PartyScreenRoute({required this.partyCode})
-      : super(builder: (BuildContext context) {
-          return PartyScreen(partyCode: partyCode);
-        });
+      : super(
+          builder: (context) {
+            return PartyScreen(partyCode: partyCode);
+          },
+        );
 
   final String partyCode;
 }
 
 class PartyScreen extends StatefulWidget {
-  final String partyCode;
-
   const PartyScreen({super.key, required this.partyCode});
+  final String partyCode;
 
   @override
   State<PartyScreen> createState() => _PartyScreenState();
@@ -42,6 +43,38 @@ class _PartyScreenState extends State<PartyScreen> {
   void dispose() {
     timer?.cancel();
     super.dispose();
+  }
+
+  Widget _modalBuilder(BuildContext context) {
+    return CupertinoActionSheet(
+      title: const Text('You win!', style: TextStyle(fontSize: 24)),
+      message: const Text('You have the most steps! 🎉'),
+      actions: [
+        Padding(
+          padding: const EdgeInsets.all(8),
+          child: CupertinoTextField.borderless(
+            autocorrect: false,
+            textAlign: TextAlign.center,
+            placeholder: 'Request the next song',
+            onChanged: (value) {
+              print('DEBUG: value is $value');
+            },
+          ),
+        ),
+        CupertinoActionSheetAction(
+          child: const Text('Submit'),
+          onPressed: () {
+            Navigator.pop(context);
+          },
+        ),
+      ],
+      cancelButton: CupertinoActionSheetAction(
+        child: const Text('Cancel', style: TextStyle(color: Colors.red)),
+        onPressed: () {
+          Navigator.pop(context);
+        },
+      ),
+    );
   }
 
   @override
@@ -108,6 +141,15 @@ class _PartyScreenState extends State<PartyScreen> {
                         textAlign: TextAlign.center,
                       ),
                       const Spacer(),
+                      CupertinoButton(
+                        onPressed: () {
+                          showCupertinoModalPopup<void>(
+                            context: context,
+                            builder: _modalBuilder,
+                          );
+                        },
+                        child: const Text('simulate "you win"'),
+                      ),
                       CupertinoButton(
                         color: Colors.red,
                         onPressed: () {
