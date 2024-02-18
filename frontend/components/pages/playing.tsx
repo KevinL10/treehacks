@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { PageState, RankingItem } from '@/lib/utils';
 import RankingTable from '../ranking-table';
+import NowPlaying from '../spotify-card';
 
 const players = [
   { name: "Kevin", score: 425 },
@@ -43,8 +44,11 @@ export default function PlayingPage({ setState, roomId }: { setState: React.Disp
           <h1 className='text-3xl font-semibold tracking-tighter'>Leaderboard</h1>
         </div>
 
-        <div className='mt-8'>
+        {/* <div className='mt-8'>
             <iframe style={{borderRadius: 12}} src="https://open.spotify.com/embed/track/5yVIlYEHZxQVLyInCdldoS?utm_source=generator" width="100%" height="352" frameBorder="0" allowFullScreen={false} allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
+        </div> */}
+        <div className='mt-8'>
+          <NowPlaying />
         </div>
         <div className='mt-8 flex justify-between'>
           <RankingTable title="Top Overall" players={leaderboardOverall} />

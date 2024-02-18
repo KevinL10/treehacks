@@ -94,7 +94,6 @@ class ConnectionCubit extends Cubit<ConnState>
 
     final state = this.state;
     if (state is Connected && state.uiState != UiState.starting) {
-      print('submitData: abortedd');
       return;
     }
 

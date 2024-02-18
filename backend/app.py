@@ -127,6 +127,7 @@ async def websocket_endpoint(websocket: WebSocket):
             step_count = data["params"]["step_count"]
             timestamp = int(time.time())
 
+
             user_health_data[room_id][name].append((heartrate, step_count, timestamp))
             top_users = get_top_room_users(room_id)
             await websocket.send_json({"method": "update_placement", "params": {"index": top_users.index(name)+1}})
