@@ -13,7 +13,7 @@ export default function StartPage({ setState, setRoomId }: {
   return (<div className="flex justify-center items-center  h-[100vh]">
     <Button onClick={() => {
       setState(PageState.WAITING)
-      setRoomId(Math.floor(99998+ Math.random() * 900000))
+      setRoomId(Math.floor(1000+ Math.random() * 9000))
     }}>Create Room</Button>
   </div>)
 }

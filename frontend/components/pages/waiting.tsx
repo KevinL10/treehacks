@@ -4,22 +4,11 @@ import { Button } from '@/components/ui/button';
 import { PageState } from '@/lib/utils';
 import { setSourceMapsEnabled } from 'process';
 
-function randomCode() {
-  return Math.floor(1000 + Math.random() * 9000)
-}
-
-async function getRoomUsers({roomId}: {roomId: number}){
-  const response = await fetch(`http://localhost:8000/users?room_id=${roomId}`)
-  const data = await response.json()
-
-  console.log(data)
-}
 
 export default function WaitingPage({ setState, roomId }: {
   setState: React.Dispatch<React.SetStateAction<PageState>>,
   roomId: number,
 }) {
-  const [code, setCode] = useState<number>(randomCode())
   const [users, setUsers] = useState<string[]>([])
   
   
