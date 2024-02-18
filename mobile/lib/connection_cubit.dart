@@ -2,9 +2,11 @@ import 'dart:async';
 import 'dart:convert';
 
 import 'package:bloc/bloc.dart';
+import 'package:bloc_presentation/bloc_presentation.dart';
 import 'package:web_socket_channel/web_socket_channel.dart';
 
-class ConnectionCubit extends Cubit<ConnState> {
+class ConnectionCubit extends Cubit<ConnState>
+    with BlocPresentationMixin<ConnState, ConnectionCubitEvent> {
   ConnectionCubit({required this.url}) : super(NotConnected());
 
   final String url;
@@ -22,9 +24,6 @@ class ConnectionCubit extends Cubit<ConnState> {
     await channel.ready;
 
     channel.stream.listen((event) {
-      print('DEBUG received event: $event');
-
-      // event is JSON map
       final data = json.decode(event as String) as Map<String, dynamic>;
       if (data['method'] == 'update_status') {
         final status = data['params']['status'] as String;
@@ -32,7 +31,7 @@ class ConnectionCubit extends Cubit<ConnState> {
         if (status == 'waiting') {
           emit(
             Connected(
-              waiting: true,
+              uiState: UiState.waiting,
               roomId: roomId,
               name: name,
               placement: null,
@@ -41,19 +40,28 @@ class ConnectionCubit extends Cubit<ConnState> {
         } else if (status == 'starting') {
           emit(
             Connected(
-              waiting: false,
+              uiState: UiState.starting,
               roomId: roomId,
               name: name,
               placement: null,
             ),
           );
-        } else if (status == 'update_placement') {
+        } else if (status == 'finished') {
+          final prevState = state;
+          final prevPlacement =
+              prevState is Connected ? prevState.placement : null;
+          final won = data['params']['won'] as bool;
+
+          if (won) {
+            emitPresentation(const ShowWinDialog());
+          }
+
           emit(
             Connected(
-              waiting: false,
+              uiState: UiState.finished,
               roomId: roomId,
               name: name,
-              placement: null,
+              placement: prevPlacement,
             ),
           );
         }
@@ -61,7 +69,7 @@ class ConnectionCubit extends Cubit<ConnState> {
         final placement = data['params']['index'] as int;
         emit(
           Connected(
-            waiting: false,
+            uiState: UiState.starting,
             roomId: roomId,
             name: name,
             placement: placement,
@@ -85,11 +93,23 @@ class ConnectionCubit extends Cubit<ConnState> {
     assert(_channel != null, 'web socket channel must not be null');
 
     final state = this.state;
-    // if (state is Connected && state.) {
-
-    // }
+    if (state is Connected && state.uiState != UiState.starting) {
+      print('submitData: abortedd');
+      return;
+    }
 
     _channel!.sink.add(_jsonRpc('submit_data', data));
+  }
+
+  Future<void> setSong(String title) async {
+    assert(_channel != null, 'web socket channel must not be null');
+
+    final state = this.state;
+    if (state is Connected && state.uiState != UiState.finished) {
+      return;
+    }
+
+    _channel!.sink.add(_jsonRpc('set_song', {'song': title}));
   }
 
   void leaveParty() {
@@ -120,14 +140,22 @@ class InProgress extends ConnState {}
 
 class Connected extends ConnState {
   Connected({
-    required this.waiting,
+    required this.uiState,
     required this.roomId,
     required this.name,
     required this.placement,
   });
 
-  final bool waiting;
+  final UiState uiState;
   final int roomId;
   final String name;
   final int? placement;
+}
+
+enum UiState { waiting, starting, finished }
+
+sealed class ConnectionCubitEvent {}
+
+class ShowWinDialog implements ConnectionCubitEvent {
+  const ShowWinDialog();
 }
