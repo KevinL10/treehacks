@@ -15,7 +15,7 @@ export default function PlayingPage({ setState, roomId }: { setState: React.Disp
 
   const fetchLeaderboard = async (category: string, setLeaderboard: React.Dispatch<React.SetStateAction<RankingItem[]>>) => {
     //category one of "overall" or "fitness"
-    const response = await fetch(`http://localhost:8000/top/${category}?room_id=${roomId}`)
+    const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/top/${category}?room_id=${roomId}`)
     const data = await response.json()
     console.log(category, data)
     setLeaderboard(data.data)
