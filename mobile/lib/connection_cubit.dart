@@ -1,44 +1,52 @@
 import 'dart:async';
+import 'dart:convert';
 
 import 'package:bloc/bloc.dart';
-import 'package:socket_io_client/socket_io_client.dart' as io;
+import 'package:web_socket_channel/web_socket_channel.dart';
 
 class ConnectionCubit extends Cubit<ConnState> {
   ConnectionCubit({required this.url}) : super(NotConnected());
 
   final String url;
-  io.Socket? socket;
+  WebSocketChannel? _channel;
 
   Future<void> connect(String code) async {
     if (state is Connected) {
       return;
     }
 
+    emit(InProgress());
+
     final completer = Completer<void>();
 
-    emit(InProgress());
-    socket = io.io(url);
-    socket!.onConnect((arg) {
-      completer.complete();
-      print('DEBUG connect, arg: $arg');
-      socket!.emit('join_room', 1234);
-    });
+    final channel = WebSocketChannel.connect(Uri.parse(url));
+    _channel = channel;
 
-    socket!.onDisconnect((_) {
-      emit(NotConnected());
-      print('DEBUG: disconnect');
-    });
+    await channel.ready;
 
-    completer.isCompleted;
-    print('DEBUG completer is completed');
+    // channel.sink.add(_jsonRpc('join_room', 1234);
+
     emit(Connected());
   }
 
   Future<void> submitData(Map<String, dynamic> data) async {
-    assert(socket != null);
+    assert(_channel != null, 'web socket channel must not be null');
 
-    socket!.emit('submit_data', data);
+    _channel!.sink.add(_jsonRpc('submit_data', data));
   }
+}
+
+var _id = 0;
+
+String _jsonRpc(String methodName, [Map<String, dynamic>? data]) {
+  final message = <String, dynamic>{
+    'jsonrpc': '2.0',
+    'method': methodName,
+    if (data != null) 'params': data,
+    'id': _id++,
+  };
+
+  return json.encode(message);
 }
 
 sealed class ConnState {}

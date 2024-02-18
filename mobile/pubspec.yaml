@@ -12,9 +12,7 @@ dependencies:
   flutter:
     sdk: flutter
   flutter_bloc: ^8.1.4
-  health: ^9.0.1
   pin_code_fields: ^8.0.1
-  socket_io_client: ^2.0.3+1
   terra_flutter_bridge: ^0.6.3
   terra_flutter_rt: ^0.1.1
   web_socket_channel: ^2.4.4
