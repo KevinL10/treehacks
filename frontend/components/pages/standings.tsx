@@ -11,11 +11,8 @@ export default function StandingsPage({ setState, roomId }: { setState: React.Di
   const [players, setPlayers] = useState<RankingItem[]>([]);
   
   useEffect(() => {
-
     setTimeout(() => {setState(PageState.WAITING)}, 10 * 1000)
-
   }, [])
-  
   
   useEffect(() => {
     // Define the async function
@@ -30,7 +27,6 @@ export default function StandingsPage({ setState, roomId }: { setState: React.Di
         console.error('There was an error fetching the data', error);
       }
     };
-    
     fetchData();
   }, [])
 
