@@ -32,10 +32,24 @@ room_started_event: Dict[int, asyncio.Event] = {}
 # maps from room_id: {name: [(heart_rate, step, time)]}
 user_health_data = defaultdict(lambda: defaultdict(list))
 
-def compute_score(measurements):
+def compute_overall_score(measurements):
     avg_heart_rate = sum([m[0] for m in measurements]) / len(measurements)
     return avg_heart_rate * 5
 
+
+def compute_calories_score(measurements):
+    # 200bpm maximum heart rate
+    # calories per minute for 100bpm is 6
+    # for 150 bpm is 13
+    # for 160 bpm is 15
+
+    score = 0
+    for i in range(len(measurements) - 1):
+        minute_diff = (measurements[i+ 1][2] - measurements[i][2]) / 60
+        calories_per_minute = (7 * measurements[i + 1][0] / 50) - 8
+        score += calories_per_minute * minute_diff
+    
+    return score
 
 @app.get("/users")
 async def get_room_data(room_id: int = -1):
@@ -58,10 +72,16 @@ async def start_room(request: Request):
 @app.get("/top/overall")
 async def get_top_overall(room_id: int = -1):
     # (name, score)
-    items = [(user, compute_score(measurements)) for user, measurements in user_health_data[room_id].items()]
+    items = [(user, compute_overall_score(measurements)) for user, measurements in user_health_data[room_id].items()]
     ranked_results = [{"name": item[0], "score": item[1]} for item in sorted(items, key=lambda k: -k[1])]
     return JSONResponse({"data": ranked_results})
 
+@app.get("/top/calories")
+async def get_top_calories(room_id: int = -1):
+    # (name, score)
+    items = [(user, compute_calories_score(measurements)) for user, measurements in user_health_data[room_id].items()]
+    ranked_results = [{"name": item[0], "score": item[1]} for item in sorted(items, key=lambda k: -k[1])]
+    return JSONResponse({"data": ranked_results})
 
 
 @app.get("/data")

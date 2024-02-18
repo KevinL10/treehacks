@@ -33,7 +33,7 @@ async def main():
             mock_data = {"heartrate": randint(60, 180), "step_count": randint(0, 200)}
             await websocket.send(json.dumps({"method": "submit_data", "params": mock_data}))
 
-            time.sleep(5)
+            time.sleep(1)
 
 '''
 start room: `curl -X POST -H "Content-Type: application/json" -d '{"room_id": 123456}' localhost:8000/start`

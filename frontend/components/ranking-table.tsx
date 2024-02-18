@@ -8,7 +8,7 @@ export default function RankingTable({ title, players }: { title: string, player
       <div className='text-xl tracking-tighter'>{title}</div>
       <div>
         {players.map((player, idx) => {
-          return <div key={player.name}>{idx + 1}. {player.name} - {player.score}</div>
+          return <div key={player.name}>{idx + 1}. {player.name} - {player.score.toFixed(2)}</div>
         })}
       </div>
     </div>
