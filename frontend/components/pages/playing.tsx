@@ -44,7 +44,7 @@ export default function PlayingPage({ setState, roomId }: { setState: React.Disp
         </div>
 
         <div className='mt-8'>
-            <iframe style={{borderRadius: 12}} src="https://open.spotify.com/embed/track/5yVIlYEHZxQVLyInCdldoS?utm_source=generator" width="100%" height="352" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
+            <iframe style={{borderRadius: 12}} src="https://open.spotify.com/embed/track/5yVIlYEHZxQVLyInCdldoS?utm_source=generator" width="100%" height="352" frameBorder="0" allowFullScreen={false} allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
         </div>
         <div className='mt-8 flex justify-between'>
           <RankingTable title="Top Overall" players={leaderboardOverall} />
