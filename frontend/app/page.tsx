@@ -5,6 +5,7 @@ import { PageState } from "@/lib/utils";
 import Image from "next/image";
 import WaitingPage from '@/components/pages/waiting';
 import PlayingPage from '@/components/pages/playing';
+import StandingsPage from '@/components/pages/standings';
 
 
 export default function Home() {
@@ -22,6 +23,10 @@ export default function Home() {
 
   if (state === PageState.PLAYING) {
     return <PlayingPage roomId={roomId} setState={setState}/>
+  }
+
+  if (state === PageState.STANDINGS) {
+    return <StandingsPage roomId={roomId} setState={setState} />
   }
 
   return <div>missing page</div>

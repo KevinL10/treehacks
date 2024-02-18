@@ -43,8 +43,11 @@ export default function PlayingPage({ setState, roomId }: { setState: React.Disp
           <h1 className='text-3xl font-semibold tracking-tighter'>Leaderboard</h1>
         </div>
 
+        <div className='mt-8'>
+            <iframe style={{borderRadius: 12}} src="https://open.spotify.com/embed/track/5yVIlYEHZxQVLyInCdldoS?utm_source=generator" width="100%" height="352" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
+        </div>
         <div className='mt-8 flex justify-between'>
-          <RankingTable title="Top Dancers" players={leaderboardOverall} />
+          <RankingTable title="Top Overall" players={leaderboardOverall} />
           <RankingTable title="Top Calories Burned" players={leaderboardCalories} />
           <RankingTable title="Top Steps Taken" players={leaderboardOverall} />
         </div>
