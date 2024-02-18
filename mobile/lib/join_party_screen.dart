@@ -93,24 +93,14 @@ class _JoinPartyScreenState extends State<JoinPartyScreen> {
                   onPressed: () async {
                     final partyCode = _partyCodeController.text;
                     final name = _nameController.text;
-                    print('DEBUG tapped 1, length: ${partyCode.length}');
                     if (partyCode.length != 4 || name.isEmpty) {
                       return;
                     }
 
-                    print('DEBUG tapped 2');
                     await context.read<ConnectionCubit>().connect(
-                          code: partyCode,
+                          roomId: int.parse(partyCode),
                           name: name,
                         );
-
-                    if (!context.mounted) {
-                      return;
-                    }
-
-                    // await Navigator.of(context).pushReplacement(
-                    //   PartyScreenRoute(partyCode: partyCode),
-                    // );
                   },
                   child: const Text('Join'),
                 ),

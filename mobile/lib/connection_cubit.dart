@@ -10,33 +10,42 @@ class ConnectionCubit extends Cubit<ConnState> {
   final String url;
   WebSocketChannel? _channel;
 
-  Future<void> connect({required String code, required String name}) async {
+  Future<void> connect({required int roomId, required String name}) async {
     if (state is Connected) {
-      return;
+      throw StateError('already connected!');
     }
 
     emit(InProgress());
 
     final channel = WebSocketChannel.connect(Uri.parse(url));
     _channel = channel;
-
     await channel.ready;
 
     channel.stream.listen((event) {
-      print('DEBUG received: $event');
+      print('DEBUG received event: $event');
+
+      // event is JSON map
+      final data = json.decode(event as String) as Map<String, dynamic>;
+      if (data['method'] == 'update_status') {
+        final status = data['params']['status'] as String;
+
+        if (status == 'waiting') {
+          emit(Connected(waiting: true, roomId: roomId, name: name));
+        } else if (status == 'starting') {
+          emit(Connected(waiting: false, roomId: roomId, name: name));
+        }
+      }
     });
 
     channel.sink.add(
       _jsonRpc(
         'join_room',
         {
-          'room_id': code,
+          'room_id': roomId,
           'name': name,
         },
       ),
     );
-
-    emit(Connected(partyCode: code, name: name));
   }
 
   Future<void> submitData(Map<String, dynamic> data) async {
@@ -72,8 +81,13 @@ class NotConnected extends ConnState {}
 class InProgress extends ConnState {}
 
 class Connected extends ConnState {
-  Connected({required this.partyCode, required this.name});
+  Connected({
+    required this.waiting,
+    required this.roomId,
+    required this.name,
+  });
 
-  final String partyCode;
+  final bool waiting;
+  final int roomId;
   final String name;
 }

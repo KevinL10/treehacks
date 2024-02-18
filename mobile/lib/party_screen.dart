@@ -30,9 +30,8 @@ class _PartyScreenState extends State<PartyScreen> {
   void initState() {
     super.initState();
     timer = Timer.periodic(const Duration(seconds: 1), (timer) {
-      print('DEBUG: timer is ticking at ${DateTime.now()}');
       context.read<ConnectionCubit>().submitData(<String, dynamic>{
-        'heart_rate': 69,
+        'heartrate': 69,
         'step_count': 2137,
       });
     });
@@ -93,71 +92,79 @@ class _PartyScreenState extends State<PartyScreen> {
                 InProgress _ => const Center(
                     child: CircularProgressIndicator(),
                   ),
-                Connected _ => Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                    children: [
-                      const SizedBox(height: 32),
-                      const Text(
-                        'party code:',
-                        style: TextStyle(fontSize: 20),
-                        textAlign: TextAlign.center,
-                      ),
-                      const Text(
-                        'widget.partyCode',
-                        style: TextStyle(
-                          fontSize: 24,
-                          fontWeight: FontWeight.bold,
+                final Connected c => () {
+                    if (c.waiting) {
+                      return const Center(
+                        child: Text('Waiting for party to start...'),
+                      );
+                    }
+
+                    return Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                        const SizedBox(height: 32),
+                        const Text(
+                          'party code:',
+                          style: TextStyle(fontSize: 20),
+                          textAlign: TextAlign.center,
                         ),
-                        textAlign: TextAlign.center,
-                      ),
-                      const SizedBox(height: 32),
-                      const Text(
-                        'heart rate:',
-                        style: TextStyle(fontSize: 20),
-                        textAlign: TextAlign.center,
-                      ),
-                      const Text(
-                        '142 bpm',
-                        style: TextStyle(
-                          fontSize: 24,
-                          fontWeight: FontWeight.bold,
+                        const Text(
+                          'widget.partyCode',
+                          style: TextStyle(
+                            fontSize: 24,
+                            fontWeight: FontWeight.bold,
+                          ),
+                          textAlign: TextAlign.center,
                         ),
-                        textAlign: TextAlign.center,
-                      ),
-                      const SizedBox(height: 32),
-                      const Text(
-                        'position in leaderboard',
-                        style: TextStyle(fontSize: 24),
-                        textAlign: TextAlign.center,
-                      ),
-                      const Text(
-                        '7',
-                        style: TextStyle(
-                          fontSize: 30,
-                          fontWeight: FontWeight.bold,
+                        const SizedBox(height: 32),
+                        const Text(
+                          'heart rate:',
+                          style: TextStyle(fontSize: 20),
+                          textAlign: TextAlign.center,
                         ),
-                        textAlign: TextAlign.center,
-                      ),
-                      const Spacer(),
-                      CupertinoButton(
-                        onPressed: () {
-                          showCupertinoModalPopup<void>(
-                            context: context,
-                            builder: _modalBuilder,
-                          );
-                        },
-                        child: const Text('simulate "you win"'),
-                      ),
-                      CupertinoButton(
-                        color: Colors.red,
-                        onPressed: () {
-                          context.read<ConnectionCubit>().leaveParty();
-                        },
-                        child: const Text('Leave Party'),
-                      ),
-                    ],
-                  ),
+                        const Text(
+                          '142 bpm',
+                          style: TextStyle(
+                            fontSize: 24,
+                            fontWeight: FontWeight.bold,
+                          ),
+                          textAlign: TextAlign.center,
+                        ),
+                        const SizedBox(height: 32),
+                        const Text(
+                          'position in leaderboard',
+                          style: TextStyle(fontSize: 24),
+                          textAlign: TextAlign.center,
+                        ),
+                        const Text(
+                          '7',
+                          style: TextStyle(
+                            fontSize: 30,
+                            fontWeight: FontWeight.bold,
+                          ),
+                          textAlign: TextAlign.center,
+                        ),
+                        const Spacer(),
+                        CupertinoButton(
+                          onPressed: () {
+                            showCupertinoModalPopup<void>(
+                              context: context,
+                              builder: _modalBuilder,
+                            );
+                          },
+                          child: const Text('simulate "you win"'),
+                        ),
+                        CupertinoButton(
+                          color: Colors.red,
+                          onPressed: () {
+                            context.read<ConnectionCubit>().leaveParty();
+                          },
+                          child: const Text('Leave Party'),
+                        ),
+                      ],
+                    );
+                  }(),
               };
             },
           ),
