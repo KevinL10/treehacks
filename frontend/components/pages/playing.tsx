@@ -41,7 +41,8 @@ export default function PlayingPage({ setState, roomId }: { setState: React.Disp
 
         <div className='mt-8 flex justify-between'>
           <RankingTable title="Top Dancers" players={leaderboardOverall} />
-          <RankingTable title="Most Calories Burned" players={players} />
+          <RankingTable title="Top Calories Burned" players={leaderboardOverall} />
+          <RankingTable title="Top Steps Taken" players={leaderboardOverall} />
         </div>
       </div>
     </div>
