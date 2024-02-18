@@ -18,8 +18,8 @@ class MyApp extends StatelessWidget {
     return BlocProvider<ConnectionCubit>(
       create: (context) => ConnectionCubit(
         url: Platform.isAndroid
-            ? 'http://10.0.2.2:8000'
-            : 'http://localhost:8000',
+            ? 'ws://10.0.2.2:8000/ws'
+            : 'ws://localhost:8000/ws',
       ),
       child: const CupertinoApp(
         title: 'Secret TreeHacks X project',

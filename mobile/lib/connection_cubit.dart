@@ -10,21 +10,31 @@ class ConnectionCubit extends Cubit<ConnState> {
   final String url;
   WebSocketChannel? _channel;
 
-  Future<void> connect(String code) async {
+  Future<void> connect({required String code, required String name}) async {
     if (state is Connected) {
       return;
     }
 
     emit(InProgress());
 
-    final completer = Completer<void>();
-
     final channel = WebSocketChannel.connect(Uri.parse(url));
     _channel = channel;
 
     await channel.ready;
 
-    // channel.sink.add(_jsonRpc('join_room', 1234);
+    channel.stream.listen((event) {
+      print('DEBUG received: $event');
+    });
+
+    channel.sink.add(
+      _jsonRpc(
+        'join_room',
+        {
+          'room_id': code,
+          'name': name,
+        },
+      ),
+    );
 
     emit(Connected());
   }

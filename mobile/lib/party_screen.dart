@@ -34,7 +34,8 @@ class _PartyScreenState extends State<PartyScreen> {
     timer = Timer.periodic(const Duration(seconds: 1), (timer) {
       print('DEBUG: timer is ticking at ${DateTime.now()}');
       context.read<ConnectionCubit>().submitData(<String, dynamic>{
-        'heart_rate': 142,
+        'heart_rate': 69,
+        'step_count': 2137,
       });
     });
   }

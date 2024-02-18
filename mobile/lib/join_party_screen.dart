@@ -3,7 +3,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:terra_flutter_bridge/models/enums.dart';
 import 'package:terra_flutter_bridge/terra_flutter_bridge.dart';
 import 'package:treehacks_app/connection_cubit.dart';
-import 'package:treehacks_app/party_screen.dart';
 import 'package:treehacks_app/pin_input.dart';
 
 class JoinPartyScreenRoute extends CupertinoPageRoute<void> {
@@ -24,6 +23,7 @@ class JoinPartyScreen extends StatefulWidget {
 
 class _JoinPartyScreenState extends State<JoinPartyScreen> {
   final TextEditingController _partyCodeController = TextEditingController();
+  final TextEditingController _nameController = TextEditingController();
 
   @override
   void initState() {
@@ -52,10 +52,9 @@ class _JoinPartyScreenState extends State<JoinPartyScreen> {
             alignment: Alignment.center,
             padding: const EdgeInsets.all(24),
             child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                const Spacer(),
+                const SizedBox(height: 108),
                 const Text('enter party code', textAlign: TextAlign.center),
                 const SizedBox(height: 32),
                 FractionallySizedBox(
@@ -64,28 +63,54 @@ class _JoinPartyScreenState extends State<JoinPartyScreen> {
                     textEditingController: _partyCodeController,
                     onChanged: (newValue) {
                       _partyCodeController.text = newValue;
+                      setState(() {});
+                    },
+                    onCompleted: () {
+                      FocusManager.instance.primaryFocus?.unfocus();
                     },
                   ),
                 ),
-                const Spacer(flex: 2),
+                const SizedBox(height: 72),
+                if (_partyCodeController.text.length == 4) ...[
+                  const Text('enter your name', textAlign: TextAlign.center),
+                  const SizedBox(height: 32),
+                  FractionallySizedBox(
+                    widthFactor: 0.9,
+                    child: CupertinoTextField(
+                      autocorrect: false,
+                      textAlign: TextAlign.center,
+                      style: const TextStyle(fontSize: 28),
+                      controller: _nameController,
+                      padding: const EdgeInsets.all(16),
+                      onChanged: (newValue) {
+                        _nameController.text = newValue;
+                      },
+                    ),
+                  ),
+                ],
+                const Spacer(),
                 CupertinoButton.filled(
                   onPressed: () async {
                     final partyCode = _partyCodeController.text;
+                    final name = _nameController.text;
                     print('DEBUG tapped 1, length: ${partyCode.length}');
-                    if (partyCode.length != 4) {
+                    if (partyCode.length != 4 || name.isEmpty) {
                       return;
                     }
 
                     print('DEBUG tapped 2');
-                    await context.read<ConnectionCubit>().connect(partyCode);
+                    await context.read<ConnectionCubit>().connect(
+                          code: partyCode,
+                          name: name,
+                        );
 
                     if (!context.mounted) {
                       return;
                     }
 
-                    await Navigator.of(context).pushReplacement(
-                      PartyScreenRoute(partyCode: partyCode),
-                    );
+                    // await Navigator.of(context).pushReplacement(
+                    //   PartyScreenRoute(partyCode: partyCode),
+                    // );
                   },
                   child: const Text('Join'),
                 ),

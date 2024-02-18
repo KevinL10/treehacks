@@ -6,10 +6,12 @@ class PinInput extends StatelessWidget {
     super.key,
     required this.textEditingController,
     required this.onChanged,
+    required this.onCompleted,
   });
 
   final TextEditingController textEditingController;
   final ValueChanged<String> onChanged;
+  final VoidCallback onCompleted;
 
   @override
   Widget build(BuildContext context) {
@@ -39,9 +41,7 @@ class PinInput extends StatelessWidget {
             backgroundColor: Colors.transparent,
             // errorAnimationController: errorController,
             controller: textEditingController,
-            onCompleted: (v) {
-              print('Completed');
-            },
+            onCompleted: (_) => onCompleted(),
             onChanged: onChanged,
           );
         },
