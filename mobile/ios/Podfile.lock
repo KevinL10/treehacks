@@ -1,22 +1,28 @@
 PODS:
+  - device_info_plus (0.0.1):
+    - Flutter
   - Flutter (1.0.0)
-  - smart_auth (0.0.1):
+  - health (1.0.4):
     - Flutter
 
 DEPENDENCIES:
+  - device_info_plus (from `.symlinks/plugins/device_info_plus/ios`)
   - Flutter (from `Flutter`)
-  - smart_auth (from `.symlinks/plugins/smart_auth/ios`)
+  - health (from `.symlinks/plugins/health/ios`)
 
 EXTERNAL SOURCES:
+  device_info_plus:
+    :path: ".symlinks/plugins/device_info_plus/ios"
   Flutter:
     :path: Flutter
-  smart_auth:
-    :path: ".symlinks/plugins/smart_auth/ios"
+  health:
+    :path: ".symlinks/plugins/health/ios"
 
 SPEC CHECKSUMS:
+  device_info_plus: c6fb39579d0f423935b0c9ce7ee2f44b71b9fce6
   Flutter: e0871f40cf51350855a761d2e70bf5af5b9b5de7
-  smart_auth: 4bedbc118723912d0e45a07e8ab34039c19e04f2
+  health: 5a380c0f6c4f619535845992993964293962e99e
 
-PODFILE CHECKSUM: 819463e6a0290f5a72f145ba7cde16e8b6ef0796
+PODFILE CHECKSUM: 978dd492a93a8ef4ec2dc2b3631de447af34068a
 
 COCOAPODS: 1.15.2
