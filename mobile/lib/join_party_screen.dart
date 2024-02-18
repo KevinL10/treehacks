@@ -1,27 +1,43 @@
 import 'package:flutter/cupertino.dart';
-import 'package:treehacks_app/party_screen.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:terra_flutter_bridge/models/enums.dart';
+import 'package:terra_flutter_bridge/terra_flutter_bridge.dart';
+import 'package:treehacks_app/connection_cubit.dart';
 import 'package:treehacks_app/pin_input.dart';
 
-class JoinPartyScreenRoute extends CupertinoPageRoute {
-  JoinPartyScreenRoute()
-      : super(builder: (BuildContext context) {
-          return JoinPartyScreen();
-        });
+// class JoinPartyScreenRoute extends CupertinoPageRoute<void> {
+//   JoinPartyScreenRoute()
+//       : super(
+//           builder: (context) {
+//             return const JoinPartyScreen();
+//           },
+//         );
+// }
+
+class JoinPartyScreen extends StatefulWidget {
+  const JoinPartyScreen({super.key});
 
   @override
-  Widget buildPage(
-    BuildContext context,
-    Animation<double> animation,
-    Animation<double> secondaryAnimation,
-  ) {
-    return JoinPartyScreen();
-  }
+  State<JoinPartyScreen> createState() => _JoinPartyScreenState();
 }
 
-class JoinPartyScreen extends StatelessWidget {
+class _JoinPartyScreenState extends State<JoinPartyScreen> {
   final TextEditingController _partyCodeController = TextEditingController();
+  final TextEditingController _nameController = TextEditingController();
 
-  JoinPartyScreen({super.key});
+  @override
+  void initState() {
+    super.initState();
+
+    TerraFlutter.initTerra('devID', 'referenceID').then((_) {
+      TerraFlutter.initConnection(
+        Connection.appleHealth,
+        'token',
+        true,
+        [CustomPermission.heartRate, CustomPermission.steps],
+      );
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -30,36 +46,61 @@ class JoinPartyScreen extends StatelessWidget {
         middle: Text('join party'),
       ),
       child: SafeArea(
-        child: Center(
-          child: Padding(
-            padding: const EdgeInsets.all(20.0),
+        child: GestureDetector(
+          onTap: () => FocusManager.instance.primaryFocus?.unfocus(),
+          child: Container(
+            alignment: Alignment.center,
+            padding: const EdgeInsets.all(24),
             child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                const Spacer(),
-                const Text('enter party code'),
+                const SizedBox(height: 108),
+                const Text('enter party code', textAlign: TextAlign.center),
                 const SizedBox(height: 32),
                 FractionallySizedBox(
                   widthFactor: 0.9,
                   child: PinInput(
                     textEditingController: _partyCodeController,
-                    onChanged: (newValue) {},
+                    onChanged: (newValue) {
+                      _partyCodeController.text = newValue;
+                      setState(() {});
+                    },
+                    onCompleted: () {
+                      FocusManager.instance.primaryFocus?.unfocus();
+                    },
                   ),
                 ),
-                const Spacer(flex: 2),
+                const SizedBox(height: 72),
+                if (_partyCodeController.text.length == 4) ...[
+                  const Text('enter your name', textAlign: TextAlign.center),
+                  const SizedBox(height: 32),
+                  FractionallySizedBox(
+                    widthFactor: 0.9,
+                    child: CupertinoTextField(
+                      autocorrect: false,
+                      textAlign: TextAlign.center,
+                      style: const TextStyle(fontSize: 28),
+                      controller: _nameController,
+                      padding: const EdgeInsets.all(16),
+                      onChanged: (newValue) {
+                        _nameController.text = newValue;
+                      },
+                    ),
+                  ),
+                ],
+                const Spacer(),
                 CupertinoButton.filled(
                   onPressed: () async {
-                    String partyCode = _partyCodeController.text;
-                    if (_partyCodeController.text.length != 4) {
+                    final partyCode = _partyCodeController.text;
+                    final name = _nameController.text;
+                    if (partyCode.length != 4 || name.isEmpty) {
                       return;
                     }
 
-                    await Future.delayed(const Duration(seconds: 1));
-                    if (!context.mounted) return;
-
-                    Navigator.of(context).pushReplacement(
-                      PartyScreenRoute(partyCode: partyCode),
-                    );
+                    await context.read<ConnectionCubit>().connect(
+                          roomId: int.parse(partyCode),
+                          name: name,
+                        );
                   },
                   child: const Text('Join'),
                 ),
