@@ -10,10 +10,11 @@ import { PageState } from '@/lib/utils';
 //Setting up the Spotify API and Endpoints
 const NOW_PLAYING_ENDPOINT = 'https://api.spotify.com/v1/me/player/currently-playing';
 const TOKEN_ENDPOINT = 'https://accounts.spotify.com/api/token';
-// note: revoke client app afterward
-const client_id = 'b5dc8b9383054416af7d8e1337f9bd93';
-const client_secret = '91a7f47a1bc7476d94e364b947c86c6b';
-const refresh_token = 'AQDLVjugSWaQ1W0sjXhPI92u9MjTEzGoTtL8CRIJx9dHnqcoHxbvONPkxfOhvNs7hubVvwX1GwwjGqUdipZpdI2wfz3NMPAvok6waVveqBkda_M8VWiZ02CHlQXwMbI8vjs';
+
+// revoked client app
+const client_id = '';
+const client_secret = '';
+const refresh_token = '';
 
 
 //Function to generate an access token using the refresh token everytime the website is opened or refreshed
